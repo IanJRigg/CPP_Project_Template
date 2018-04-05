@@ -1,5 +1,7 @@
 #include <getopt.h>
 
+#include <iostream>
+
 #include "configuration.h"
 
 int main(int argc, char** argv)
