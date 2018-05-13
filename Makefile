@@ -3,28 +3,32 @@ APP := main
 
 # Directory Locations
 SRC_DIR := src
-OBJ_DIR := obj
+OBJ_DIR := ./.obj
 
 # File Lists
-CPP_FILES := $(wildcard $(SRC_DIR)/*.cc)
-OBJ_FILES := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(CPP_FILES))
+CPP_FILES := $(wildcard $(SRC_DIR)/*.cpp)
+OBJ_FILES := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(CPP_FILES))
 
 # Compiler options
-LD_FLAGS  := $(LDFLAGS)
-CPPFLAGS  := $(CPPFLAGS)
-CFLAGS    := $(CFLAGS) -Wall -Wextra -Wpedantic
+LDFLAGS  := $(LDFLAGS)
+CXXFLAGS := $(CXXFLAGS) --std=c++11 -Wall -Wextra -Wpedantic
 
-all: $(OBJ_DIR) $(APP)
+
+.PHONY: all
+all: $(APP) | $(OBJ_DIR)
 
 $(APP): $(OBJ_FILES)
 	$(CXX) $(LDFLAGS) -o $@ $^
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CXX) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
-
-clean:
-	$(RM) $(APP)
-	$(RM) -rf $(OBJ_DIR)
+$(OBJ_FILES): | $(OBJ_DIR)
 
 $(OBJ_DIR):
 	mkdir -p $@
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+.PHONY: clean
+clean:
+	$(RM) $(APP)
+	$(RM) -rf $(OBJ_DIR)
